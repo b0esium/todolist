@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/5/sketchy/bootstrap.min.css"
+    />
+    <link href="../assets/fontawesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="../assets/fontawesome/css/solid.css" rel="stylesheet" />
+    <title>TODO</title>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1 class="display-4 text-center">
+        <i class="fa-solid fa-calendar-check text-primary"></i> My
+        <span class="text-primary">TODO</span> list
+      </h1>
+      <form id="book-form" class="pt-3">
+        <div class="form-group pb-3">
+          <label for="project">Project name</label>
+          <input type="text" id="project" class="form-control" />
+        </div>
+        <div class="form-group pb-3">
+          <label for="priority">Priority</label>
+          <select
+            name="priority"
+            id="priority"
+            form="book-form"
+            class="form-control"
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group pb-4">
+          <label for="deadline">Deadline</label>
+          <input type="date" id="deadline" class="form-control" />
+        </div>
+        <input
+          type="submit"
+          value="Add project"
+          class="btn btn-primary btn-block"
+        />
+      </form>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
