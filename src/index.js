@@ -1,29 +1,17 @@
 // task class: represents a Task
 class Task {
-  constructor(name, priority, deadline) {
+  constructor(name, priority, deadline, taskID) {
     this.name = name;
     this.priority = priority;
     this.deadline = deadline;
+    this.taskID = taskID;
   }
 }
 
 // UI class: handles UI display
 class UI {
   static displayTasks() {
-    const StoredTasks = [
-      {
-        name: "Call Mum",
-        priority: "high",
-        deadline: "01/02/2023",
-      },
-      {
-        name: "Mow lawn",
-        priority: "medium",
-        deadline: "15/02/2023",
-      },
-    ];
-
-    const tasks = StoredTasks;
+    const tasks = Store.getTasks();
     tasks.forEach((task) => UI.addTaskToList(task));
   }
 
@@ -45,6 +33,18 @@ class UI {
     }
   }
 
+  static showAlert(message, className) {
+    const div = document.createElement("div");
+    div.className = `alert alert-${className}`;
+    div.appendChild(document.createTextNode(message));
+    const container = document.querySelector(".container");
+    const form = document.getElementById("task-form");
+    container.insertBefore(div, form);
+
+    // vanish in 2 seconds
+    setTimeout(() => document.querySelector(".alert").remove(), 2000);
+  }
+
   static clearFields() {
     document.getElementById("name").value = "";
     document.getElementById("priority").value = "";
@@ -53,30 +53,76 @@ class UI {
 }
 
 // store class: handles storage
+class Store {
+  static getTasks() {
+    let tasks;
+    if (localStorage.getItem("tasks") === null) {
+      tasks = [];
+    } else {
+      tasks = JSON.parse(localStorage.getItem("tasks"));
+    }
+    return tasks;
+  }
+
+  static addTask(task) {
+    const tasks = Store.getTasks();
+    tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  static removeTask(taskID) {
+    const tasks = Store.getTasks();
+    tasks.forEach((task, index) => {
+      if (task.taskID === taskID) {
+        tasks.splice(index, 1);
+      }
+    });
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+}
 
 // event: display tasks
 document.addEventListener("DOMContentLoaded", UI.displayTasks);
 
 // event: add a task
 document.getElementById("task-form").addEventListener("submit", (e) => {
-  e.preventDefault;
+  e.preventDefault();
 
   // get form values
   const name = document.getElementById("name").value;
   const priority = document.getElementById("priority").value;
   const deadline = document.getElementById("deadline").value;
 
-  // instantiate task
-  const task = new Task(name, priority, deadline);
+  // validate
+  if (name === "" || priority === "" || deadline === "") {
+    UI.showAlert("Please fill in all fields", "danger");
+  } else {
+    // instantiate task
+    const task = new Task(name, priority, deadline);
 
-  // add task to UI
-  UI.addTaskToList(task);
+    // add task to UI
+    UI.addTaskToList(task);
 
-  // clear fields
-  UI.clearFields();
+    // add task to storage
+    Store.addTask(task);
+
+    // show success message
+    UI.showAlert("Task added", "success");
+
+    // clear fields
+    UI.clearFields();
+  }
 });
 
 // event : remove a task
 document.getElementById("task-list").addEventListener("click", (e) => {
+  // remove task from UI
   UI.deleteTask(e.target);
+
+  // remove task from storage
+  Store.deleteTask();
+
+  // show success message
+  UI.showAlert("Task removed", "success");
 });
