@@ -34,9 +34,21 @@ class UI {
     <td>${task.name}</td>
     <td>${task.priority}</td>
     <td>${task.deadline}</td>
-    <td><a href="#" class="btn btn-danger">X</a></td>
+    <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
     `;
     list.appendChild(row);
+  }
+
+  static deleteTask(el) {
+    if (el.classList.contains("delete")) {
+      el.parentElement.parentElement.remove();
+    }
+  }
+
+  static clearFields() {
+    document.getElementById("name").value = "";
+    document.getElementById("priority").value = "";
+    document.getElementById("deadline").value = "";
   }
 }
 
@@ -59,6 +71,12 @@ document.getElementById("task-form").addEventListener("submit", (e) => {
 
   // add task to UI
   UI.addTaskToList(task);
+
+  // clear fields
+  UI.clearFields();
 });
 
 // event : remove a task
+document.getElementById("task-list").addEventListener("click", (e) => {
+  UI.deleteTask(e.target);
+});
