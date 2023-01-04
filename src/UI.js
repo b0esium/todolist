@@ -36,7 +36,10 @@ export default class UI {
 
     // change form button
     document.getElementById("formBtn").value = "Edit task";
-    document.getElementById("formBtn").classList.add("btn-warning");
+    document.getElementById("formBtn").classList.add("text-dark");
+    document
+      .getElementById("formBtn")
+      .classList.replace("btn-info", "btn-warning");
   }
 
   static displayEditedTask() {
@@ -51,7 +54,7 @@ export default class UI {
     const div = document.createElement("div");
     div.className = `alert alert-${className}`;
     div.appendChild(document.createTextNode(message));
-    const container = document.querySelector(".container");
+    const container = document.querySelector(".col-8");
     const form = document.getElementById("task-form");
     container.insertBefore(div, form);
 
@@ -65,6 +68,9 @@ export default class UI {
     document.getElementById("deadline").value = "";
     // change form button
     document.getElementById("formBtn").value = "Add task";
+    document
+      .getElementById("formBtn")
+      .classList.replace("text-dark", "text-white");
     document
       .getElementById("formBtn")
       .classList.replace("btn-warning", "btn-info");
