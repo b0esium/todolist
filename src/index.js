@@ -22,12 +22,14 @@ class UI {
     <td>${task.name}</td>
     <td>${task.priority}</td>
     <td>${task.deadline}</td>
+    <td hidden>${task.taskID}</td>
     <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
     `;
     list.appendChild(row);
   }
 
   static deleteTask(el) {
+    // if clicked on remove button
     if (el.classList.contains("delete")) {
       el.parentElement.parentElement.remove();
     }
@@ -70,10 +72,10 @@ class Store {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
-  static removeTask(taskID) {
+  static deleteTask(IDToRemove) {
     const tasks = Store.getTasks();
     tasks.forEach((task, index) => {
-      if (task.taskID === taskID) {
+      if (task.taskID === IDToRemove) {
         tasks.splice(index, 1);
       }
     });
@@ -98,8 +100,12 @@ document.getElementById("task-form").addEventListener("submit", (e) => {
   if (name === "" || priority === "" || deadline === "") {
     UI.showAlert("Please fill in all fields", "danger");
   } else {
+    // attribute a unique ID to new task
+    const tasks = Store.getTasks();
+    const taskID = Math.max(...tasks.map((task) => task.taskID), -1) + 1; // find highest existing ID and increment it
+
     // instantiate task
-    const task = new Task(name, priority, deadline);
+    const task = new Task(name, priority, deadline, taskID);
 
     // add task to UI
     UI.addTaskToList(task);
@@ -121,7 +127,7 @@ document.getElementById("task-list").addEventListener("click", (e) => {
   UI.deleteTask(e.target);
 
   // remove task from storage
-  Store.deleteTask();
+  Store.deleteTask(+e.target.parentElement.previousElementSibling.textContent); // convert to number
 
   // show success message
   UI.showAlert("Task removed", "success");
