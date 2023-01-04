@@ -2,10 +2,13 @@ import Task from "./task.js";
 import Store from "./store.js";
 import UI from "./UI.js";
 
-// event: display tasks
+let mode = "add";
+let editedTaskID = 0;
+
+// event: display tasks on initial load
 document.addEventListener("DOMContentLoaded", UI.displayTasks);
 
-// event: add a task
+// event: add or edit a task
 document.getElementById("task-form").addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -18,35 +21,56 @@ document.getElementById("task-form").addEventListener("submit", (e) => {
   if (name === "" || priority === "" || deadline === "") {
     UI.showAlert("Please fill in all fields", "danger");
   } else {
-    // attribute a unique ID to new task
-    const tasks = Store.getTasks();
-    const taskID = Math.max(...tasks.map((task) => task.taskID), -1) + 1; // find highest existing ID and increment it
+    if (mode == "add") {
+      // attribute a unique ID to new task
+      const tasks = Store.getTasks();
+      const taskID = Math.max(...tasks.map((task) => task.taskID), -1) + 1; // find highest existing ID and increment it
 
-    // instantiate task
-    const task = new Task(name, priority, deadline, taskID);
+      // instantiate task
+      const task = new Task(name, priority, deadline, taskID);
 
-    // add task to UI
-    UI.addTaskToList(task);
+      // add task to storage
+      Store.addTask(task);
 
-    // add task to storage
-    Store.addTask(task);
+      // add task to UI
+      UI.addTaskToList(task);
+      UI.showAlert("Task added", "success");
 
-    // show success message
-    UI.showAlert("Task added", "success");
+      UI.resetForm();
+    } else if (mode == "edit") {
+      Store.editTask(editedTaskID, name, priority, deadline);
 
-    // clear fields
-    UI.clearFields();
+      // update UI
+      UI.displayEditedTask();
+      UI.resetForm();
+      UI.showAlert("Task edited", "success");
+
+      // switch back to default mode
+      mode = "add";
+    }
   }
 });
 
-// event : remove a task
+// event: remove or edit a task
 document.getElementById("task-list").addEventListener("click", (e) => {
-  // remove task from UI
-  UI.deleteTask(e.target);
+  if (e.target.classList.contains("delete")) {
+    // remove task from UI
+    UI.deleteTask(e.target);
 
-  // remove task from storage
-  Store.deleteTask(+e.target.parentElement.previousElementSibling.textContent); // convert to number
+    // remove task from storage
+    Store.deleteTask(
+      +e.target.parentElement.previousElementSibling.textContent
+    ); // find ID in hidden div and convert to number
 
-  // show success message
-  UI.showAlert("Task removed", "success");
+    // show success message
+    UI.showAlert("Task completed", "success");
+  } else if (e.target.classList.contains("edit")) {
+    mode = "edit";
+    // edit task by populating form fields
+    UI.editTask(e.target);
+    // update editedTaskID to pass into submit button function in edit mode
+    editedTaskID =
+      +e.target.parentElement.previousElementSibling.previousElementSibling
+        .textContent;
+  }
 });

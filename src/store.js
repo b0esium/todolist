@@ -27,4 +27,17 @@ export default class Store {
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }
+
+  static editTask(IDToEdit, newName, newPriority, newDeadline) {
+    const tasks = Store.getTasks();
+    tasks.forEach((task, index) => {
+      if (task.taskID === IDToEdit) {
+        task.name = newName;
+        task.priority = newPriority;
+        task.deadline = newDeadline;
+      }
+    });
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
 }

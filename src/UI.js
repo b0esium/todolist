@@ -16,16 +16,35 @@ export default class UI {
     <td>${task.priority}</td>
     <td>${task.deadline}</td>
     <td hidden>${task.taskID}</td>
-    <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
+    <td><a href="#" class="btn btn-success btn-sm delete"><i class="fa-regular fa-check"></i></a></td>
+    <td><a href="#" class="btn btn-warning btn-sm edit"><i class="fa-regular fa-pen-to-square"></i></a></td>
     `;
     list.appendChild(row);
   }
 
   static deleteTask(el) {
-    // if clicked on remove button
-    if (el.classList.contains("delete")) {
-      el.parentElement.parentElement.remove();
+    el.parentElement.parentElement.remove();
+  }
+
+  static editTask(el) {
+    document.getElementById("name").value =
+      el.parentElement.parentElement.childNodes[1].childNodes[0].textContent;
+    document.getElementById("priority").value =
+      el.parentElement.parentElement.childNodes[3].childNodes[0].textContent;
+    document.getElementById("deadline").value =
+      el.parentElement.parentElement.childNodes[5].childNodes[0].textContent;
+
+    // change form button
+    document.getElementById("formBtn").value = "Edit task";
+    document.getElementById("formBtn").classList.add("btn-warning");
+  }
+
+  static displayEditedTask() {
+    const list = document.getElementById("task-list");
+    while (list.lastChild) {
+      list.lastChild.remove();
     }
+    UI.displayTasks();
   }
 
   static showAlert(message, className) {
@@ -40,9 +59,14 @@ export default class UI {
     setTimeout(() => document.querySelector(".alert").remove(), 2000);
   }
 
-  static clearFields() {
+  static resetForm() {
     document.getElementById("name").value = "";
     document.getElementById("priority").value = "";
     document.getElementById("deadline").value = "";
+    // change form button
+    document.getElementById("formBtn").value = "Add task";
+    document
+      .getElementById("formBtn")
+      .classList.replace("btn-warning", "btn-info");
   }
 }
