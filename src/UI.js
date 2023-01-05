@@ -16,7 +16,7 @@ export default class UI {
     <td>${task.priority}</td>
     <td>${task.deadline}</td>
     <td hidden>${task.taskID}</td>
-    <td><a href="#" class="btn btn-success btn-sm delete"><i class="fa-regular fa-check"></i></a></td>
+    <td><a href="#" class="btn btn-success btn-sm delete"><i class="fa-solid fa-check"></i></a></td>
     <td><a href="#" class="btn btn-warning btn-sm edit"><i class="fa-regular fa-pen-to-square"></i></a></td>
     `;
     list.appendChild(row);
